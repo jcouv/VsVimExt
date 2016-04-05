@@ -69,6 +69,7 @@ namespace VsVimExtCommands
         // TODO: file explorer with Vim-style bindings
         // TODO: list derived types
         // TODO: next/previous error in document (not just in view)
+        // TODO: kill TestDriven.NET test runner
 
         private void MoveTabLeft(object sender, EventArgs e)
         {
