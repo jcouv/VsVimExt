@@ -1,5 +1,8 @@
-﻿using Microsoft.VisualStudio.Editor;
+﻿using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System;
@@ -45,9 +48,9 @@ namespace VsVimExtCommands
                 var menuItem2 = new MenuCommand(this.PreviousErrorInView, menuCommandID2);
                 commandService.AddCommand(menuItem2);
 
-                var menuCommandID3 = new CommandID(CommandSet, CommandId3);
-                var menuItem3 = new MenuCommand(this.MoveTabLeft, menuCommandID3);
-                commandService.AddCommand(menuItem3);
+                //var menuCommandID3 = new CommandID(CommandSet, CommandId3);
+                //var menuItem3 = new MenuCommand(this.MoveTabLeft, menuCommandID3);
+                //commandService.AddCommand(menuItem3);
             }
         }
 
@@ -70,10 +73,25 @@ namespace VsVimExtCommands
         // TODO: list derived types
         // TODO: next/previous error in document (not just in view)
         // TODO: kill TestDriven.NET test runner
+        // TODO: delete double blank lines
 
         private void MoveTabLeft(object sender, EventArgs e)
         {
+            var DocumentWindowMgr = ServiceProvider.GetService(typeof(IVsUIShellDocumentWindowMgr)) as IVsUIShellDocumentWindowMgr;
+            var DTE = ServiceProvider.GetService(typeof(DTE)) as DTE2;
 
+            foreach (var item in DTE.Documents)
+            {
+                var doc = item as EnvDTE.Document;
+                if (doc != null)
+                {
+                }
+            }
+
+            //for (int i = 0; i < DTE.Documents.Count; i++)
+            //{
+            //    var doc = DTE.Documents.Item(i); 
+            //}
         }
 
         /// <summary>

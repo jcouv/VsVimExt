@@ -96,6 +96,7 @@
             <IDSymbol name="MyCommandId" value="0x0100" />
             <IDSymbol name="MyCommandId2" value="0x0101" />
             <IDSymbol name="MyCommandId3" value="0x0102" />
+            <IDSymbol name="OpenFileToolbar" value="0x2000" />
         </GuidSymbol>
 
         <GuidSymbol name="guidImages" value="{9a3da742-5b6b-4a91-8ca4-d886c9f88b6d}" >

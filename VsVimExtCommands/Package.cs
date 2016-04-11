@@ -40,6 +40,7 @@ namespace VsVimExtCommands
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(CommandPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+    [ProvideToolWindow(typeof(FileOpenToolWindow), MultiInstances=true)]
     public sealed class CommandPackage : Package
     {
         /// <summary>
@@ -58,6 +59,45 @@ namespace VsVimExtCommands
             // initialization is the Initialize method.
         }
 
+        /// <summary>
+        /// This function is called when the user clicks the menu item that shows the 
+        /// tool window. See the Initialize method to see how the menu item is associated to 
+        /// this function using the OleMenuCommandService service and the MenuCommand class.
+        /// </summary>
+        private void ShowToolWindow(object sender, EventArgs e)
+        {
+            // For a multi-instance ToolWindow, find an unused ID
+            int id = FindUnusedToolWindowId(typeof(FileOpenToolWindow));
+
+            // Create the window with the unused ID.
+            var window = CreateToolWindow(typeof(FileOpenToolWindow), id) as FileOpenToolWindow;
+            if ((null == window) || (null == window.Frame))
+            {
+                //throw new NotSupportedException(Resources.CanNotCreateWindow);
+            }
+
+            // Display the window.
+            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
+
+        /// <summary>
+        /// Find an unused ID for a new multi instance toolwindow.
+        /// </summary>
+        /// <param name="toolWindowType">The type of the toolwindow</param>
+        /// <returns>An unused ID</returns>
+        private int FindUnusedToolWindowId(Type toolWindowType)
+        {
+            for (int id = 0; ; ++id)
+            {
+                ToolWindowPane window = FindToolWindow(toolWindowType, id, false);
+                if (window == null)
+                {
+                    return id;
+                }
+            }
+        }
+
         #region Package Members
 
         /// <summary>
@@ -71,8 +111,14 @@ namespace VsVimExtCommands
             IEnumWindowFrames windows;
             int i = service.GetDocumentWindowEnum(out windows);
 
-
-            Command.Initialize(this);
+            OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (commandService != null)
+            {
+                var menuCommandID3 = new CommandID(Command.CommandSet, Command.CommandId3);
+                var menuItem3 = new MenuCommand(ShowToolWindow, menuCommandID3);
+                commandService.AddCommand(menuItem3);
+            }
+                Command.Initialize(this);
             base.Initialize();
         }
 
